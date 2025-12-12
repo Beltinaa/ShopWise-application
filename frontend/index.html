@@ -8,37 +8,108 @@
 </head>
 <body>
 
-    <header>
-        <h1>ShopWise</h1>
-        <nav>
-            <a href="#" id="homeBtn">Home</a>
-            <a href="#" id="wishlistBtn">Wishlist</a>
-            <a href="#" id="cartBtn">Cart</a>
-            <a href="#" id="loginBtn">Login</a>
-        </nav>
-    </header>
+<header>
+    <h1>ShopWise</h1>
+    <nav>
+        <a href="#" id="homeBtn">Home</a>
+        <a href="#" id="wishlistBtn">Wishlist</a>
+        <a href="#" id="cartBtn">Cart</a>
+        <a href="#" id="loginBtn">Login</a>
+    </nav>
+</header>
 
-    <section id="searchSection">
-        <h2>Find the Best Prices Instantly</h2>
-        <input type="text" id="searchInput" placeholder="Search for a product...">
-        <button id="searchBtn">Search</button>
-    </section>
-
-    <section id="productsSection">
-        <h2>Products</h2>
-        <div id="productsContainer" class="grid"></div>
-    </section>
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModal">&times;</span>
-            <h2 id="modalName"></h2>
-            <p id="modalDescription"></p>
-            <h3>Price Comparison</h3>
-            <div id="priceList"></div>
+<div id="authAppModal" class="auth-app-modal">
+    <div class="auth-app-content">
+        <div class="auth-header">
+            <h2>ShopWise</h2>
+            <span id="closeAuthAppModal">&times;</span>
+        </div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab(event,'loginTab')">Login</button>
+            <button class="auth-tab" onclick="switchAuthTab(event,'registerTab')">Register</button>
+        </div>
+        <div class="auth-tab-content" id="loginTab">
+            <form id="loginFormApp">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div id="loginMsgApp"></div>
+        </div>
+        <div class="auth-tab-content" id="registerTab" style="display:none">
+            <form id="registerFormApp">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <div id="registerMsgApp"></div>
         </div>
     </div>
+</div>
 
-    <script src="app.js"></script>
+<section id="searchSection">
+    <h2>Find the Best Prices Instantly</h2>
+    <input type="text" id="searchInput" placeholder="Search for a product...">
+    <button id="searchBtn">Search</button>
+</section>
+
+<section id="productsSection">
+    <h2>Products</h2>
+    <div id="productsContainer" class="grid"></div>
+</section>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal">&times;</span>
+        <h2 id="modalName"></h2>
+        <p id="modalDescription"></p>
+        <h3>Price Comparison</h3>
+        <div id="priceList"></div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    // Open/Close App-style Login/Register Modal
+    const loginBtnApp = document.getElementById('loginBtn');
+    const authAppModal = document.getElementById('authAppModal');
+    const closeAuthAppModal = document.getElementById('closeAuthAppModal');
+
+    loginBtnApp.onclick = () => authAppModal.style.display='flex';
+    closeAuthAppModal.onclick = () => authAppModal.style.display='none';
+    window.addEventListener('click', (e)=>{ if(e.target===authAppModal) authAppModal.style.display='none'; });
+
+    // Switch Tabs
+    function switchAuthTab(evt, tabId){
+        const tabs = document.getElementsByClassName('auth-tab-content');
+        for(let t of tabs) t.style.display='none';
+        const tabButtons = document.getElementsByClassName('auth-tab');
+        for(let b of tabButtons) b.classList.remove('active');
+        document.getElementById(tabId).style.display='block';
+        evt.currentTarget.classList.add('active');
+    }
+
+    // AJAX Login/Register
+    const backendUrl = "../backend/auth.php";
+
+    document.getElementById('loginFormApp').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('login', true);
+        const res = await fetch(backendUrl,{method:'POST',body:formData});
+        const text = await res.text();
+        document.getElementById('loginMsgApp').innerText=text;
+    });
+
+    document.getElementById('registerFormApp').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('register', true);
+        const res = await fetch(backendUrl,{method:'POST',body:formData});
+        const text = await res.text();
+        document.getElementById('registerMsgApp').innerText=text;
+    });
+</script>
 </body>
 </html>

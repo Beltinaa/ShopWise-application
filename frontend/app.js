@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api";   
+const API_URL = "http://localhost:8080/api";
 
 const searchBtn = document.getElementById("searchBtn");
 const searchInput = document.getElementById("searchInput");
@@ -56,7 +56,6 @@ async function loadProducts(query) {
             return;
         }
 
-        // Fallback to demo list
         displayProducts(demoProducts);
 
     } catch (error) {
@@ -105,9 +104,7 @@ async function openProduct(id) {
 
         priceList.innerHTML = "";
         prices.forEach(p => {
-            priceList.innerHTML += `
-                <p><strong>${p.retailer}</strong> — ${p.price} €</p>
-            `;
+            priceList.innerHTML += `<p><strong>${p.retailer}</strong> — ${p.price} €</p>`;
         });
 
     } catch (err) {
@@ -117,9 +114,49 @@ async function openProduct(id) {
     }
 }
 
-// CLOSE MODAL
+// CLOSE PRODUCT MODAL
 closeModal.onclick = () => modal.style.display = "none";
+window.onclick = (event) => { if (event.target === modal) modal.style.display = "none"; };
 
-window.onclick = (event) => {
-    if (event.target === modal) modal.style.display = "none";
-};
+/* ===========================
+   LOGIN / REGISTER APP-STYLE
+============================ */
+const loginBtnApp = document.getElementById('loginBtn');
+const authAppModal = document.getElementById('authAppModal');
+const closeAuthAppModal = document.getElementById('closeAuthAppModal');
+
+// Open/Close modal
+loginBtnApp.onclick = () => authAppModal.style.display = 'flex';
+closeAuthAppModal.onclick = () => authAppModal.style.display = 'none';
+window.addEventListener('click', (e) => { if (e.target === authAppModal) authAppModal.style.display = 'none'; });
+
+// Tabs
+function switchAuthTab(evt, tabId) {
+    const tabs = document.getElementsByClassName('auth-tab-content');
+    for (let t of tabs) t.style.display = 'none';
+    const tabButtons = document.getElementsByClassName('auth-tab');
+    for (let b of tabButtons) b.classList.remove('active');
+    document.getElementById(tabId).style.display = 'block';
+    evt.currentTarget.classList.add('active');
+}
+
+// AJAX Login/Register
+const backendUrl = "../backend/auth.php";
+
+document.getElementById('loginFormApp').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    formData.append('login', true);
+    const res = await fetch(backendUrl, { method:'POST', body:formData });
+    const text = await res.text();
+    document.getElementById('loginMsgApp').innerText = text;
+});
+
+document.getElementById('registerFormApp').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    formData.append('register', true);
+    const res = await fetch(backendUrl, { method:'POST', body:formData });
+    const text = await res.text();
+    document.getElementById('registerMsgApp').innerText = text;
+});
