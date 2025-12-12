@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopWise - Smart Price Comparison</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>ShopWise</h1>
+        <nav>
+            <a href="#" id="homeBtn">Home</a>
+            <a href="#" id="wishlistBtn">Wishlist</a>
+            <a href="#" id="cartBtn">Cart</a>
+            <a href="#" id="loginBtn">Login</a>
+        </nav>
+    </header>
+
+    <section id="searchSection">
+        <h2>Find the Best Prices Instantly</h2>
+        <input type="text" id="searchInput" placeholder="Search for a product...">
+        <button id="searchBtn">Search</button>
+    </section>
+
+    <section id="productsSection">
+        <h2>Products</h2>
+        <div id="productsContainer" class="grid"></div>
+    </section>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal">&times;</span>
+            <h2 id="modalName"></h2>
+            <p id="modalDescription"></p>
+            <h3>Price Comparison</h3>
+            <div id="priceList"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
