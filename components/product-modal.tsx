@@ -2,17 +2,7 @@
 
 import { X, MapPin, Store, TrendingDown } from "lucide-react"
 import Image from "next/image"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  imageUrl: string
-  description: string
-  retailer: string
-  distance: number
-  originalPrice?: number
-}
+import type { Product } from "@/lib/types"
 
 interface PriceComparison {
   retailer: string
