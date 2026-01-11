@@ -1,15 +1,63 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useShop } from '@/components/shop-provider'
-import type { CartItem } from '@/lib/types'
+
+type CartItem = {
+  id: number
+  quantity: number
+  product: any
+}
+
+const STORAGE_KEY = 'shopwise_cart'
+
+function normalizeCartItems(raw: unknown): CartItem[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null
+      const product = (item as CartItem).product
+      if (!product || typeof product !== 'object') return null
+      const id = Number((item as CartItem).id)
+      const quantity = Number((item as CartItem).quantity)
+      if (!Number.isFinite(id) || !Number.isFinite(quantity)) return null
+      return { id, quantity: Math.max(1, quantity), product }
+    })
+    .filter((item): item is CartItem => Boolean(item))
+}
 
 export default function CartPage() {
   const router = useRouter()
-  const { cart, removeFromCart, updateCartQuantity } = useShop()
+  const [items, setItems] = useState<CartItem[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const total = cart.reduce((sum, it) => sum + (it.product.price || 0) * it.quantity, 0)
+  useEffect(() => {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) {
+      try {
+        setItems(normalizeCartItems(JSON.parse(raw)))
+      } catch {
+        setItems([])
+      }
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoaded) return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+  }, [isLoaded, items])
+
+  function removeItem(id: number) {
+    setItems((prev) => prev.filter((i) => i.id !== id))
+  }
+
+  function updateQuantity(id: number, q: number) {
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, quantity: q } : it)))
+  }
+
+  const total = items.reduce((sum, it) => sum + (it.product.price || 0) * it.quantity, 0)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -25,10 +73,10 @@ export default function CartPage() {
         <h1 className="text-2xl font-bold">Your Cart</h1>
       </div>
 
-      {cart.length === 0 && <div className="text-muted-foreground">Your cart is empty.</div>}
+      {items.length === 0 && <div className="text-muted-foreground">Your cart is empty.</div>}
 
       <div className="space-y-4">
-        {cart.map((it: CartItem) => (
+        {items.map((it) => (
           <div key={it.id} className="bg-card rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-20">
@@ -41,15 +89,15 @@ export default function CartPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <input type="number" value={it.quantity} min={1} onChange={(e) => updateCartQuantity(it.id, Math.max(1, Number(e.target.value || 1)))} className="w-20 px-2 py-1 border rounded" />
+              <input type="number" value={it.quantity} min={1} onChange={(e) => updateQuantity(it.id, Math.max(1, Number(e.target.value || 1)))} className="w-20 px-2 py-1 border rounded" />
               <div className="font-bold">{((it.product.price || 0) * it.quantity).toLocaleString()} ALL</div>
-              <button onClick={() => removeFromCart(it.id)} className="px-3 py-1 bg-destructive text-destructive-foreground rounded">Remove</button>
+              <button onClick={() => removeItem(it.id)} className="px-3 py-1 bg-destructive text-destructive-foreground rounded">Remove</button>
             </div>
           </div>
         ))}
       </div>
 
-      {cart.length > 0 && (
+      {items.length > 0 && (
         <div className="mt-6 p-4 border border-border bg-card rounded-lg flex items-center justify-between">
           <div className="text-lg font-semibold">Total</div>
           <div className="text-2xl font-bold">{total.toLocaleString()} ALL</div>
