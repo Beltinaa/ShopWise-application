@@ -1,55 +1,32 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-const STORAGE_KEY = 'shopwise_wishlist'
-const CART_KEY = 'shopwise_cart'
+import { ArrowLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useShop } from '@/components/shop-provider'
+import type { Product } from '@/lib/types'
 
 export default function WishlistPage() {
-  const [items, setItems] = useState<any[]>([])
-
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      try {
-        setItems(JSON.parse(raw))
-      } catch {
-        setItems([])
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  }, [items])
-
-  function removeItem(id: number) {
-    setItems((prev) => prev.filter((p) => p.id !== id))
-  }
-
-  function moveToCart(product: any) {
-    const raw = localStorage.getItem(CART_KEY)
-    let cart = []
-    try {
-      cart = raw ? JSON.parse(raw) : []
-    } catch {
-      cart = []
-    }
-    const newItem = { id: Date.now(), quantity: 1, product }
-    cart.push(newItem)
-    localStorage.setItem(CART_KEY, JSON.stringify(cart))
-    // remove from wishlist
-    removeItem(product.id)
-  }
+  const router = useRouter()
+  const { wishlist, moveWishlistToCart, removeFromWishlist } = useShop()
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Your Wishlist</h1>
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted/60 text-foreground transition hover:bg-muted"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <h1 className="text-2xl font-bold">Your Wishlist</h1>
+      </div>
 
-      {items.length === 0 && <div className="text-muted-foreground">Your wishlist is empty.</div>}
+      {wishlist.length === 0 && <div className="text-muted-foreground">Your wishlist is empty.</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items.map((p) => (
+        {wishlist.map((p: Product) => (
           <div key={p.id} className="bg-card rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-20">
@@ -62,8 +39,8 @@ export default function WishlistPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button onClick={() => moveToCart(p)} className="px-3 py-1 bg-primary text-primary-foreground rounded">Add to cart</button>
-              <button onClick={() => removeItem(p.id)} className="px-3 py-1 bg-destructive text-destructive-foreground rounded">Remove</button>
+              <button onClick={() => moveWishlistToCart(p)} className="px-3 py-1 bg-primary text-primary-foreground rounded">Add to cart</button>
+              <button onClick={() => removeFromWishlist(p.id)} className="px-3 py-1 bg-destructive text-destructive-foreground rounded">Remove</button>
             </div>
           </div>
         ))}
