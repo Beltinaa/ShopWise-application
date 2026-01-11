@@ -1,24 +1,129 @@
-[00:00:01.696] Server  LOG      ✓ Ready in 1231ms
-[00:00:04.779] Server  LOG      ○ Compiling /groceries ...
-[00:00:05.990] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:06.109] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:06.189] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:06.210] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:06.230] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:06.366] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:06.366] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:00:06.366] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093502790}
-[00:00:06.651] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:06.651] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/groceries","route":"/groceries"}
-[00:00:06.651] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/groceries color: rgb(120, 120, 120) color: inherit {"dp":"/groceries","o":"http://localhost:3000/groceries","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093502729}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/groceries","route":"/groceries"}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/groceries color: rgb(120, 120, 120) color: inherit {"dp":"/groceries","o":"http://localhost:3000/groceries","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093502790}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093502767}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/groceries","route":"/groceries"}
-[00:00:06.652] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/groceries color: rgb(120, 120, 120) color: inherit {"dp":"/groceries","o":"http://localhost:3000/groceries","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093502823}
-[00:00:08.208] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/groceries color: rgb(120, 120, 120) color: inherit {"dp":"/groceries","o":"http://localhost:3000/groceries","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1768093504628}
-[00:01:19.147] Server  LOG      ✓ Compiled in 194ms
+[00:00:01.489] Server  LOG      ✓ Ready in 1077ms
+[00:00:09.766] Server  LOG      ○ Compiling / ...
+[00:00:10.136] Server  ERROR    ⨯ ./app/page.tsx:4:1
+Module not found: Can't resolve '@/components/featured-products'
+  2 | import Image from "next/image"
+  3 | import { SearchBar } from "@/components/search-bar"
+> 4 | import { FeaturedProducts } from "@/components/featured-products"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { ShoppingCart, Heart, MapPin } from "lucide-react"
+  6 |
+  7 | export default function HomePage() {
+
+Import map: aliased to relative './components/featured-products' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/shop-provider'
+  2 | import { Geist, Geist_Mono } from 'next/font/google'
+  3 | import { Analytics } from '@vercel/analytics/next'
+> 4 | import { ShopProvider } from '@/components/shop-provider'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import './globals.css'
+  6 |
+  7 | const _geist = Geist({ subsets: ["latin"] });
+
+Import map: aliased to relative './components/shop-provider' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:12.152] Browser ERROR   uncaughtError: Error: ./app/page.tsx:4:1
+Module not found: Can't resolve '@/components/featured-products'
+  2 | import Image from "next/image"
+  3 | import { SearchBar } from "@/components/search-bar"
+> 4 | import { FeaturedProducts } from "@/components/featured-products"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { ShoppingCart, Heart, MapPin } from "lucide-react"
+  6 |
+  7 | export default function HomePage() {
+
+Import map: aliased to relative './components/featured-products' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:12.430] Browser ERROR   ./app/page.tsx:4:1
+Module not found: Can't resolve '@/components/featured-products'
+  2 | import Image from "next/image"
+  3 | import { SearchBar } from "@/components/search-bar"
+> 4 | import { FeaturedProducts } from "@/components/featured-products"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { ShoppingCart, Heart, MapPin } from "lucide-react"
+  6 |
+  7 | export default function HomePage() {
+
+Import map: aliased to relative './components/featured-products' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:12.430] Browser ERROR   ./app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/shop-provider'
+  2 | import { Geist, Geist_Mono } from 'next/font/google'
+  3 | import { Analytics } from '@vercel/analytics/next'
+> 4 | import { ShopProvider } from '@/components/shop-provider'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import './globals.css'
+  6 |
+  7 | const _geist = Geist({ subsets: ["latin"] });
+
+Import map: aliased to relative './components/shop-provider' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:12.581] Browser ERROR   ./app/page.tsx:4:1
+Module not found: Can't resolve '@/components/featured-products'
+  2 | import Image from "next/image"
+  3 | import { SearchBar } from "@/components/search-bar"
+> 4 | import { FeaturedProducts } from "@/components/featured-products"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { ShoppingCart, Heart, MapPin } from "lucide-react"
+  6 |
+  7 | export default function HomePage() {
+
+Import map: aliased to relative './components/featured-products' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:12.581] Browser ERROR   ./app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/shop-provider'
+  2 | import { Geist, Geist_Mono } from 'next/font/google'
+  3 | import { Analytics } from '@vercel/analytics/next'
+> 4 | import { ShopProvider } from '@/components/shop-provider'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import './globals.css'
+  6 |
+  7 | const _geist = Geist({ subsets: ["latin"] });
+
+Import map: aliased to relative './components/shop-provider' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:12.983] Browser ERROR   ./app/page.tsx:4:1
+Module not found: Can't resolve '@/components/featured-products'
+  2 | import Image from "next/image"
+  3 | import { SearchBar } from "@/components/search-bar"
+> 4 | import { FeaturedProducts } from "@/components/featured-products"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { ShoppingCart, Heart, MapPin } from "lucide-react"
+  6 |
+  7 | export default function HomePage() {
+
+Import map: aliased to relative './components/featured-products' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:12.983] Browser ERROR   ./app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/shop-provider'
+  2 | import { Geist, Geist_Mono } from 'next/font/google'
+  3 | import { Analytics } from '@vercel/analytics/next'
+> 4 | import { ShopProvider } from '@/components/shop-provider'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import './globals.css'
+  6 |
+  7 | const _geist = Geist({ subsets: ["latin"] });
+
+Import map: aliased to relative './components/shop-provider' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found

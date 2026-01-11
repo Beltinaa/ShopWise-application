@@ -753,10 +753,6 @@
     margin-bottom: calc(var(--spacing) * 6);
   }
 
-  .mb-8 {
-    margin-bottom: calc(var(--spacing) * 8);
-  }
-
   .mb-10 {
     margin-bottom: calc(var(--spacing) * 10);
   }
@@ -1769,6 +1765,16 @@
     }
   }
 
+  .bg-muted\/60 {
+    background-color: var(--muted);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-muted\/60 {
+      background-color: color-mix(in oklab, var(--muted) 60%, transparent);
+    }
+  }
+
   .bg-popover {
     background-color: var(--popover);
   }
@@ -2071,10 +2077,6 @@
 
   .py-8 {
     padding-block: calc(var(--spacing) * 8);
-  }
-
-  .py-12 {
-    padding-block: calc(var(--spacing) * 12);
   }
 
   .py-16 {
@@ -4402,6 +4404,18 @@
   @media (min-width: 40rem) {
     .sm\:flex-row {
       flex-direction: row;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .sm\:items-center {
+      align-items: center;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .sm\:justify-between {
+      justify-content: space-between;
     }
   }
 
