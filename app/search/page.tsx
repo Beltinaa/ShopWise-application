@@ -1,23 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { SearchBar } from '@/components/search-bar'
 import { ProductCard } from '@/components/product-card'
 import { ProductModal } from '@/components/product-modal'
-
-type Product = {
-  id: number
-  name: string
-  price: number
-  imageUrl: string
-  description: string
-  retailer: string
-  distance: number
-  originalPrice?: number
-  category?: string
-  inStock?: boolean
-}
+import type { Product } from '@/lib/types'
+import { SortDropdown } from '@/components/sort-dropdown'
+import { sortProducts, type SortKey } from '@/lib/sort-products'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
@@ -27,6 +17,9 @@ export default function SearchPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<Product | null>(null)
+  const [sortKey, setSortKey] = useState<SortKey>('lowest')
+
+  const sortedProducts = useMemo(() => sortProducts(products, sortKey), [products, sortKey])
 
   useEffect(() => {
     setQuery(q)
@@ -61,14 +54,17 @@ export default function SearchPage() {
         </div>
 
         <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Search results{query ? ` for "${query}"` : ''}</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <h2 className="text-2xl font-bold">Search results{query ? ` for "${query}"` : ''}</h2>
+            <SortDropdown value={sortKey} onChange={setSortKey} />
+          </div>
 
           {loading && <div className="text-sm text-muted-foreground">Loading results…</div>}
 
           {!loading && products.length === 0 && <div className="text-sm text-muted-foreground">No results found.</div>}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {products.map((p) => (
+            {sortedProducts.map((p) => (
               <div key={p.id} onClick={() => setSelected(p)}>
                 <ProductCard product={p} />
               </div>
