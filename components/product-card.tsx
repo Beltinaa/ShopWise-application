@@ -2,59 +2,20 @@
 
 import type React from "react"
 
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import { MapPin, Heart, ShoppingCart, TrendingDown } from "lucide-react"
 import { ProductModal } from "./product-modal"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  imageUrl: string
-  description: string
-  retailer: string
-  distance: number
-  originalPrice?: number
-  category?: string
-  inStock?: boolean
-}
-
-function readJSON<T>(key: string): T | null {
-  if (typeof window === "undefined") return null
-  try {
-    const raw = localStorage.getItem(key)
-    if (!raw) return null
-    return JSON.parse(raw) as T
-  } catch {
-    return null
-  }
-}
-
-function writeJSON(key: string, value: any) {
-  if (typeof window === "undefined") return
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // ignore
-  }
-}
-
-const CART_KEY = "shopwise_cart"
-const WISHLIST_KEY = "shopwise_wishlist"
+import type { Product } from "@/lib/types"
+import { useShop } from "@/components/shop-provider"
 
 export function ProductCard({ product }: { product: Product }) {
+  const { addToCart, toggleWishlist, isWishlisted } = useShop()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isWishlisted, setIsWishlisted] = useState(false)
   const [isAddingCart, setIsAddingCart] = useState(false)
   const [isAddingWishlist, setIsAddingWishlist] = useState(false)
 
-  useEffect(() => {
-    // initialize wishlist state from localStorage
-    const wishlist = readJSON<Product[]>(WISHLIST_KEY) || []
-    const found = wishlist.find((p) => p.id === product.id)
-    setIsWishlisted(!!found)
-  }, [product.id])
+  const wishlisted = useMemo(() => isWishlisted(product.id), [isWishlisted, product.id])
 
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -66,15 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
 
     setIsAddingCart(true)
 
-    const raw = readJSON<{ id: number; quantity: number; product: Product }[]>(CART_KEY) || []
-    // try to find existing product in cart
-    const existing = raw.find((it) => it.product?.id === product.id)
-    if (existing) {
-      existing.quantity = (existing.quantity || 1) + 1
-    } else {
-      raw.push({ id: Date.now(), quantity: 1, product })
-    }
-    writeJSON(CART_KEY, raw)
+    addToCart(product)
 
     // animation timeout
     setTimeout(() => {
@@ -88,17 +41,7 @@ export function ProductCard({ product }: { product: Product }) {
 
     setIsAddingWishlist(true)
 
-    const raw = readJSON<Product[]>(WISHLIST_KEY) || []
-    const exists = raw.find((p) => p.id === product.id)
-    let next
-    if (exists) {
-      next = raw.filter((p) => p.id !== product.id)
-      setIsWishlisted(false)
-    } else {
-      next = [product, ...raw]
-      setIsWishlisted(true)
-    }
-    writeJSON(WISHLIST_KEY, next)
+    toggleWishlist(product)
 
     setTimeout(() => {
       setIsAddingWishlist(false)
@@ -120,12 +63,12 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           <button
             onClick={handleToggleWishlist}
-            aria-pressed={isWishlisted}
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            aria-pressed={wishlisted}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
             className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
           >
             <Heart
-              className={`w-5 h-5 ${isWishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"}`}
+              className={`w-5 h-5 ${wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"}`}
             />
           </button>
 
