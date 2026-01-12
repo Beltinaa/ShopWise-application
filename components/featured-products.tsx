@@ -19,12 +19,13 @@ export function FeaturedProducts() {
         async function load() {
             try {
                 setLoading(true)
-                const res = await fetch("/api/products?category=featured&sort=lowest", {
+                // Use /api/search as the single source of truth (works reliably on Vercel).
+                const res = await fetch("/api/search?category=featured&sort=lowest", {
                     signal: controller.signal,
                 })
                 const data = await res.json()
                 if (!mounted) return
-                setProducts(data.products || [])
+                setProducts(data.results || [])
             } catch (err: any) {
                 // Ignore aborts when unmounting or re-rendering
                 if (err?.name !== "AbortError") {

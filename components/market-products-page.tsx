@@ -25,11 +25,12 @@ export function MarketProductsPage({ marketName, marketSlug, subtitle }: Props) 
       try {
         setLoading(true)
         setError("")
-        const res = await fetch(`/api/products?marketSlug=${marketSlug}`, {
+        // Use /api/search as the single source of truth (works reliably on Vercel).
+        const res = await fetch(`/api/search?marketSlug=${marketSlug}`, {
           signal: controller.signal,
         })
         const data = await res.json()
-        setProducts(data.products || [])
+        setProducts(data.results || [])
       } catch (err) {
         if (!(err instanceof DOMException && err.name === "AbortError")) {
           setError("Failed to load products for this market.")
