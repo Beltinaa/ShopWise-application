@@ -4,46 +4,23 @@ import Image from "next/image"
 import { ShoppingCart, Heart } from "lucide-react"
 import { useShop } from "@/components/shop-provider"
 import type { Product } from "@/lib/types"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 export function FeaturedProducts() {
     const { toggleWishlist, addToCart, wishlist, cart } = useShop()
     const [order, setOrder] = useState<"asc" | "desc">("asc")
-    const [products, setProducts] = useState<Product[]>([])
-    const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const controller = new AbortController()
-        let mounted = true
+    const products: Product[] = [
+        { id: 1, name: "Ariel Detergjent ", price: 12.99, imageUrl: "/images/Ariel.jpeg", category: "Groceries" },
+        { id: 2, name: "Ujë i madh Lajthiza", price: 1.29, imageUrl: "/images/uje.jpeg", category: "Groceries" },
+        { id: 3, name: "Pizza nga Piceria Era", price: 7.99, imageUrl: "/images/pizza.jpeg", category: "Restaurants" },
+        { id: 4, name: "Vodka Sour", price: 6.5, imageUrl: "/images/vodka.jpeg", category: "Bars" },
+        { id: 5, name: "Coffee + Briosh + Ujë (Ofertë)", price: 2.99, imageUrl: "/images/offer.jpeg", category: "Bars" },
+        { id: 6, name: "Fresh Tea", price: 1.59, imageUrl: "/images/tea.jpeg", category: "Bars" },
+        { id: 7, name: "Cocktail Mojito", price: 5.5, imageUrl: "/images/mojito.jpeg", category: "Bars" },
+        { id: 8, name: "Sushi ", price: 12.99, imageUrl: "/images/sushi.jpeg", category: "Restaurants" },
+    ]
 
-        async function load() {
-            try {
-                setLoading(true)
-                // Use /api/search as the single source of truth (works reliably on Vercel).
-                const res = await fetch("/api/search?category=featured&sort=lowest", {
-                    signal: controller.signal,
-                })
-                const data = await res.json()
-                if (!mounted) return
-                setProducts(data.results || [])
-            } catch (err: any) {
-                // Ignore aborts when unmounting or re-rendering
-                if (err?.name !== "AbortError") {
-                    console.error("Failed to load featured products", err)
-                }
-            } finally {
-                if (mounted) setLoading(false)
-            }
-        }
-
-        load()
-        return () => {
-            mounted = false
-            if (!controller.signal.aborted) controller.abort()
-        }
-    }, [])
-
-    // Kontrollon nëse produkti është në wishlist dhe cart
     const isWishlisted = (id: number) => wishlist.some((p) => p.id === id)
     const isInCart = (id: number) => cart.some((p) => p.id === id)
 
@@ -51,7 +28,7 @@ export function FeaturedProducts() {
         return [...products].sort((a, b) =>
             order === "asc" ? a.price - b.price : b.price - a.price
         )
-    }, [products, order])
+    }, [order])
 
     return (
         <section className="mt-10">
@@ -73,63 +50,54 @@ export function FeaturedProducts() {
                 </div>
             </div>
 
-            {loading && (
-                <div className="text-sm text-muted-foreground">Loading featured products…</div>
-            )}
-
-            {!loading && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {sortedProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            className="border rounded-xl p-4 hover:shadow-lg transition"
-                        >
-                            {/* FOTO */}
-                            <div className="relative w-full h-48 mb-4">
-                                <Image
-                                    src={product.imageUrl}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover rounded-lg"
-                                />
-                            </div>
-
-                            {/* EMRI + ÇMIMI */}
-                            <h3 className="text-lg font-medium">{product.name}</h3>
-                            <p className="text-gray-500 mb-4">${product.price.toFixed(2)}</p>
-
-                            {/* BUTONAT */}
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => addToCart(product)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm ${
-                                        isInCart(product.id)
-                                            ? "bg-gray-400 text-white"
-                                            : "bg-black text-white"
-                                    }`}
-                                >
-                                    <ShoppingCart size={16} />
-                                    {isInCart(product.id) ? "Added" : "Add to cart"}
-                                </button>
-
-                                <button
-                                    onClick={() => toggleWishlist(product)}
-                                    className="p-2 border rounded-lg"
-                                >
-                                    <Heart
-                                        size={16}
-                                        className={
-                                            isWishlisted(product.id)
-                                                ? "fill-red-500 text-red-500"
-                                                : "text-gray-500"
-                                        }
-                                    />
-                                </button>
-                            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {sortedProducts.map((product) => (
+                    <div
+                        key={product.id}
+                        className="border rounded-lg p-2 hover:shadow-md transition text-sm"
+                    >
+                        <div className="relative w-full h-32 mb-2">
+                            <Image
+                                src={product.imageUrl}
+                                alt={product.name}
+                                fill
+                                className="object-cover rounded"
+                            />
                         </div>
-                    ))}
-                </div>
-            )}
+
+                        <h3 className="text-sm font-medium">{product.name}</h3>
+                        <p className="text-gray-500 mb-2">${product.price.toFixed(2)}</p>
+
+                        <div className="flex gap-1">
+                            <button
+                                onClick={() => addToCart(product)}
+                                className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                                    isInCart(product.id)
+                                        ? "bg-gray-400 text-white"
+                                        : "bg-black text-white"
+                                }`}
+                            >
+                                <ShoppingCart size={14} />
+                                {isInCart(product.id) ? "Added" : "Add"}
+                            </button>
+
+                            <button
+                                onClick={() => toggleWishlist(product)}
+                                className="p-1 border rounded text-xs"
+                            >
+                                <Heart
+                                    size={14}
+                                    className={
+                                        isWishlisted(product.id)
+                                            ? "fill-red-500 text-red-500"
+                                            : "text-gray-500"
+                                    }
+                                />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </section>
     )
 }
