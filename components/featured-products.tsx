@@ -14,10 +14,10 @@ export function FeaturedProducts() {
         { id: 1, name: "Ariel Detergjent Rrobash", price: 13.99, imageUrl: "/images/Ariel.jpeg", category: "Groceries" },
         { id: 2, name: "Ujë i madh Lajthiza", price: 1.29, imageUrl: "/images/uje.jpeg", category: "Groceries" },
         { id: 3, name: "Pizza nga Piceria Era", price: 7.99, imageUrl: "/images/pizza.jpeg", category: "Restaurants" },
-        { id: 4, name: "Vodka Sour", price: 6.5, imageUrl: "/images/vodka.jpeg", category: "Bars" },
+        { id: 4, name: "Vodka Sour", price: 6.50, imageUrl: "/images/vodka.jpeg", category: "Bars" },
         { id: 5, name: "Coffee + Briosh + Ujë (Ofertë)", price: 2.99, imageUrl: "/images/offer.jpeg", category: "Bars" },
-        { id: 6, name: "Fresh tea", price: 4.5, imageUrl: "/images/tea.jpeg", category: "Groceries" },
-        { id: 7, name: "Cocktail Mojito", price: 5.5, imageUrl: "/images/mojito.jpeg", category: "Bars" },
+        { id: 6, name: "Fresh tea", price: 1.50, imageUrl: "/images/tea.jpeg", category: "Groceries" },
+        { id: 7, name: "Cocktail Mojito", price: 5.50, imageUrl: "/images/mojito.jpeg", category: "Bars" },
         { id: 8, name: "Sushi ", price: 12.99, imageUrl: "/images/sushi.jpeg", category: "Restaurants" },
     ]
 
