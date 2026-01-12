@@ -1,3 +1,5 @@
+"use server";
+
 import { NextResponse } from "next/server"
 
 import {
@@ -6,8 +8,6 @@ import {
   searchProducts,
   type SortOption,
 } from "@/lib/product-repository"
-
-export const runtime = "nodejs"
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
