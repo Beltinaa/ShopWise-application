@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server"
 
-import { searchProducts, type SortOption } from "@/lib/product-repository"
-
 export const runtime = "nodejs"
+
+const SORTS = ["lowest", "highest", "distance", "location", "relevance"] as const
+type SortOption = (typeof SORTS)[number]
+
+function toSortOption(v: string | null): SortOption {
+  if (!v) return "relevance"
+  const lower = v.toLowerCase()
+  return (SORTS as readonly string[]).includes(lower) ? (lower as SortOption) : "relevance"
+}
 
 export async function GET(req: Request) {
   try {
@@ -12,8 +19,10 @@ export async function GET(req: Request) {
     const seller = url.searchParams.get("seller") || ""
     const location = url.searchParams.get("location") || ""
     const marketSlug = url.searchParams.get("marketSlug") || url.searchParams.get("market") || ""
-    const sort = (url.searchParams.get("sort") || "relevance") as SortOption
+    const sort = toSortOption(url.searchParams.get("sort"))
 
+    // Lazy-load SQLite-backed repository to avoid build-time native binding evaluation.
+    const { searchProducts } = await import("@/lib/product-repository")
     const results = searchProducts({
       q,
       category,
