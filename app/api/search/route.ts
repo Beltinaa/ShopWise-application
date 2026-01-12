@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 
 import { searchProducts, type SortOption } from "@/lib/product-repository"
 
+export const runtime = "nodejs"
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)

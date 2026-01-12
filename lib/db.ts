@@ -5,11 +5,12 @@ import path from "path"
 import { seedProducts } from "@/lib/products"
 import type { Product } from "@/lib/types"
 
-const dataDir = path.join(process.cwd(), "data")
-const dbPath = path.join(dataDir, "shopwise.db")
+// Use /tmp in Vercel (writable), otherwise local data dir for dev.
+const runtimeDir = process.env.VERCEL ? "/tmp/shopwise" : path.join(process.cwd(), "data")
+const dbPath = path.join(runtimeDir, "shopwise.db")
 
 // Ensure database directory exists
-fs.mkdirSync(dataDir, { recursive: true })
+fs.mkdirSync(runtimeDir, { recursive: true })
 
 // Single SQLite connection for the app
 const db = new Database(dbPath)
