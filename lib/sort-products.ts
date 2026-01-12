@@ -1,14 +1,8 @@
-// Tipi i produktit
-export type Product = {
-    id: number;
-    name: string;
-    price: number;       // Çmimi si number
-    imageUrl: string;    // URL imazhi
-    category: string; // p.sh. "featured", "bars", "groceries", etj.
-};
+import type { Product } from "@/lib/types";
+export type { Product } from "@/lib/types";
 
 // Tipi për renditje me "lowest" | "highest"
-export type SortKey = "lowest" | "highest";
+export type SortKey = "lowest" | "highest" | "location";
 
 /**
  * Rendit produktet sipas order "asc" | "desc"
@@ -31,7 +25,13 @@ export function sortProductsByKey(
     products: Product[],
     sortKey: SortKey = "lowest"
 ): Product[] {
-    return [...products].sort((a, b) =>
-        sortKey === "lowest" ? a.price - b.price : b.price - a.price
-    );
+    return [...products].sort((a, b) => {
+        if (sortKey === "location") {
+            const aLocation = (a.location || "").toLowerCase();
+            const bLocation = (b.location || "").toLowerCase();
+            const byLocation = aLocation.localeCompare(bLocation);
+            if (byLocation !== 0) return byLocation;
+        }
+        return sortKey === "lowest" ? a.price - b.price : b.price - a.price;
+    });
 }

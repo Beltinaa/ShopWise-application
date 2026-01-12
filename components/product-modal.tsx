@@ -29,6 +29,12 @@ export function ProductModal({
 }) {
   if (!isOpen) return null
 
+  const description = product.description || "No description available."
+  const retailer = product.retailer || "Unknown retailer"
+  const distanceLabel = product.distance
+    ? `${product.distance} km away`
+    : product.location || "Location not available"
+
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
@@ -67,17 +73,17 @@ export function ProductModal({
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
-                <p className="text-foreground">{product.description}</p>
+                <p className="text-foreground">{description}</p>
               </div>
 
               <div className="flex items-center gap-2 text-sm">
                 <Store className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground font-medium">{product.retailer}</span>
+                <span className="text-foreground font-medium">{retailer}</span>
               </div>
 
               <div className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground">{product.distance} km away</span>
+                <span className="text-foreground">{distanceLabel}</span>
               </div>
 
               <div className="pt-4 border-t border-border">

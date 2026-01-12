@@ -17,20 +17,9 @@ export default function SearchPage() {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(false)
     const [selected, setSelected] = useState<Product | null>(null)
-    const [sortKey, setSortKey] = useState<SortKey>('lowest') // "lowest" | "highest"
-
-    // Lista e të gjitha produkteve (featured + groceries + bars + ...)
-    const allProducts: Product[] = [
-        { id: 1, name: 'Product One', price: 29.99, imageUrl: '/images/Komiteti.jpeg', category: 'featured' },
-        { id: 2, name: 'Product Two', price: 39.99, imageUrl: '/images/Kino.jpeg', category: 'featured' },
-        { id: 3, name: 'Product Three', price: 49.99, imageUrl: '/images/Mugo.jpeg', category: 'featured' },
-        { id: 4, name: 'Apple', price: 5.99, imageUrl: '/images/apple.jpeg', category: 'groceries' },
-        { id: 5, name: 'Banana', price: 3.99, imageUrl: '/images/banana.jpeg', category: 'bigmarket' },
-        { id: 6, name: 'Beer', price: 2.99, imageUrl: '/images/beer.jpeg', category: 'bars' },
-        { id: 7, name: 'Pizza', price: 12.99, imageUrl: '/images/pizza.jpeg', category: 'restaurants' },
-        { id: 8, name: 'Burger', price: 9.99, imageUrl: '/images/burger.jpeg', category: 'restaurants' },
-        // shto këtu të gjitha produktet që ke
-    ]
+    const [sortKey, setSortKey] = useState<SortKey>('lowest')
+    const [locationFilter, setLocationFilter] = useState<string>("")
+    const [availableLocations, setAvailableLocations] = useState<string[]>([])
 
     // Rendit produktet sipas sortKey
     const sortedProducts = useMemo(
@@ -40,19 +29,38 @@ export default function SearchPage() {
 
     useEffect(() => {
         setQuery(q)
-        fetchResults(q)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [q])
 
+    useEffect(() => {
+        fetchResults(q, sortKey, locationFilter)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [q, sortKey, locationFilter])
+
     // Funksioni për search global
-    function fetchResults(qParam: string) {
-        setLoading(true)
-        // Filtrimi bazohet vetëm në emrin e produktit, pa marrë parasysh kategorinë
-        const filtered = allProducts.filter((p) =>
-            p.name.toLowerCase().includes(qParam.toLowerCase())
-        )
-        setProducts(filtered)
-        setLoading(false)
+    async function fetchResults(qParam: string, sort: SortKey, location?: string) {
+        try {
+            setLoading(true)
+            const params = new URLSearchParams()
+            if (qParam) params.set('q', qParam)
+            if (location) params.set('location', location)
+            params.set('sort', sort)
+
+            const res = await fetch(`/api/search?${params.toString()}`)
+            const data = await res.json()
+            const nextProducts: Product[] = data.results || []
+            setProducts(nextProducts)
+
+            const distinctLocations = Array.from(
+                new Set(
+                    nextProducts
+                        .map((p) => p.location)
+                        .filter((loc): loc is string => Boolean(loc && loc.trim()))
+                )
+            ).sort((a, b) => a.localeCompare(b))
+            setAvailableLocations(distinctLocations)
+        } finally {
+            setLoading(false)
+        }
     }
 
     function onSearch(newQuery: string) {
@@ -64,7 +72,7 @@ export default function SearchPage() {
             <div className="container mx-auto px-4 py-8">
                 {/* Search bar */}
                 <div className="max-w-3xl mx-auto">
-                    <SearchBar onSearch={onSearch} />
+                    <SearchBar onSearch={onSearch} initialQuery={query} />
                 </div>
 
                 {/* Rezultatet */}
@@ -74,8 +82,22 @@ export default function SearchPage() {
                             Search results{query ? ` for "${query}"` : ''}
                         </h2>
 
-                        {/* Dropdown për renditje */}
-                        <SortDropdown value={sortKey} onChange={setSortKey} />
+                        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                            <SortDropdown value={sortKey} onChange={setSortKey} />
+
+                            <select
+                                value={locationFilter}
+                                onChange={(e) => setLocationFilter(e.target.value)}
+                                className="border p-2 rounded"
+                            >
+                                <option value="">All locations</option>
+                                {availableLocations.map((loc) => (
+                                    <option key={loc} value={loc}>
+                                        {loc}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     {loading && (
